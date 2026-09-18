@@ -1,14 +1,10 @@
 import app from './app.js';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const port = process.env.PORT || 5000;
+import config from './config/index.js';
 
 async function bootstrap() {
   try {
-    app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
+    app.listen(config.port, () => {
+      console.log(`Server is running on port ${config.port}`);
     });
   } catch (err) {
     console.error('Failed to start server:', err);
