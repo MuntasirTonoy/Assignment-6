@@ -12,7 +12,8 @@
 - **Package Manager**: Strictly `npm` (tracked via `package-lock.json`).
 - **Formatting & Linting**: Biome (`@biomejs/biome`).
 - **Dev Server**: `tsx watch` for hot-reloading.
-- **Authentication**: `bcryptjs`, `jsonwebtoken`, `cookie-parser`, `google-auth-library`, `@clerk/express`.
+- **Authentication**: `@clerk/express`, `bcryptjs`, `jsonwebtoken`, `google-auth-library`.
+- **Security & Middleware**: `helmet`, `cors`, `cookie-parser`.
 - **Validation**: `zod` for schema and input validation.
 - **Payments**: `stripe` for processing transactions.
 - **Caching & Queues**: `ioredis` for interacting with Redis.
@@ -23,8 +24,12 @@ The project follows a **modular architecture** design:
 src/
 ├── app/
 │   ├── errors/        # Global error handlers
+│   │   ├── AppError.ts
+│   │   └── globalErrorHandler.ts
 │   ├── middlewares/   # Express middlewares (auth, validation, etc.)
-│   ├── modules/       # Feature-based modules (e.g., user, patient, doctor)
+│   │   ├── auth.ts
+│   │   └── validateRequest.ts
+│   ├── modules/       # Feature-based modules (e.g., user, patient, driver)
 │   │   └── user/
 │   │       ├── user.controller.ts
 │   │       ├── user.interface.ts
@@ -34,6 +39,7 @@ src/
 │   ├── routes/        # Main application router indexing all module routes
 │   │   └── index.ts
 │   └── utils/         # Shared utilities (redis, sendResponse)
+│       ├── prisma.ts
 │       ├── redis.ts
 │       └── sendResponse.ts
 ├── config/            # Zod-validated environment configurations
