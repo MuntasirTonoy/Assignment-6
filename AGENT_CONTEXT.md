@@ -30,12 +30,28 @@ src/
 │   │   ├── auth.ts
 │   │   └── validateRequest.ts
 │   ├── modules/       # Feature-based modules (e.g., user, patient, driver)
+│   │   ├── ambulance/
+│   │   │   ├── ambulance.controller.ts
+│   │   │   ├── ambulance.route.ts
+│   │   │   ├── ambulance.service.ts
+│   │   │   └── ambulance.validation.ts
+│   │   ├── driver/
+│   │   │   ├── driver.controller.ts
+│   │   │   ├── driver.route.ts
+│   │   │   ├── driver.service.ts
+│   │   │   └── driver.validation.ts
+│   │   ├── hospital/
+│   │   │   ├── hospital.controller.ts
+│   │   │   ├── hospital.route.ts
+│   │   │   ├── hospital.service.ts
+│   │   │   └── hospital.validation.ts
 │   │   └── user/
 │   │       ├── user.controller.ts
 │   │       ├── user.interface.ts
 │   │       ├── user.model.ts
 │   │       ├── user.route.ts
-│   │       └── user.service.ts
+│   │       ├── user.service.ts
+│   │       └── user.validation.ts
 │   ├── routes/        # Main application router indexing all module routes
 │   │   └── index.ts
 │   └── utils/         # Shared utilities (redis, sendResponse)
@@ -63,3 +79,8 @@ src/
 3. **Data Integrity**: Soft deletes only via `deletedAt`. Concurrency-safe dispatching via `prisma.$transaction`.
 4. **Git**: `package-lock.json` is tracked, other lock files are ignored.
 5. **Generated Code**: Any generated code (e.g., Prisma client, if custom) should be placed in `/src/generated` which is git-ignored.
+
+## Progress
+- **Step 4 Completed**: User sync, Me endpoints, Driver status, and Redis GEO tracking implemented.
+
+- **Step 5 Completed**: Ambulance fleet inventory, Hospital bed tracking, Redis caching, and RBAC permissions.

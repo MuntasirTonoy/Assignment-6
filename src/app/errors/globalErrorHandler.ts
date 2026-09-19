@@ -3,9 +3,9 @@ import { ZodError } from "zod";
 import { AppError } from "./AppError.js";
 
 export const globalErrorHandler = (
-  // biome-ignore lint/suspicious/noExplicitAny: Express error handler needs any
-  err: any,
-  _req: Request,
+	// biome-ignore lint/suspicious/noExplicitAny: Express error handler needs any
+	err: any,
+	_req: Request,
 	res: Response,
 	_next: NextFunction,
 ): void => {

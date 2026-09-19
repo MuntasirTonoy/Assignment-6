@@ -1,5 +1,5 @@
-import type { NextFunction, Request, Response } from 'express';
-import { verifyToken } from '@clerk/express';
+import type { NextFunction, Request, Response } from "express";
+import { verifyToken } from "@clerk/express";
 import type { Role } from "@prisma/client";
 import { env } from "../../config/index.js";
 import { prisma } from "../utils/prisma.js";
