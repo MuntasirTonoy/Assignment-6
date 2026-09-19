@@ -24,4 +24,7 @@ router.post(
 	PaymentController.bkashCallback,
 );
 
+// bKash redirects back via GET
+router.get("/callback", PaymentController.bkashCallback);
+
 export const PaymentRoutes = router;

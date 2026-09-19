@@ -16,12 +16,15 @@ const initiatePayment = async (req: Request, res: Response): Promise<void> => {
 };
 
 const bkashCallback = async (req: Request, res: Response): Promise<void> => {
-	const result = await PaymentService.bkashCallback(req.body);
+	// bKash redirects via GET with query params, or frontend might POST it.
+	const payload = Object.keys(req.query).length > 0 ? req.query : req.body;
+	// biome-ignore lint/suspicious/noExplicitAny: Express query/body merging
+	const result = await PaymentService.bkashCallback(payload as any);
 
 	sendResponse(res, {
 		statusCode: 200,
 		success: true,
-		message: `Payment callback processed: ${req.body.status}`,
+		message: `Payment callback processed: ${payload.status}`,
 		data: result,
 	});
 };
