@@ -13,8 +13,10 @@ const envSchema = z.object({
 	REDIS_URL: z.string().default("redis://localhost:6379"),
 	CLERK_SECRET_KEY: z.string().min(1, "CLERK_SECRET_KEY is required"),
 	CLERK_PUBLISHABLE_KEY: z.string().optional(),
-	STRIPE_SECRET_KEY: z.string().min(1, "STRIPE_SECRET_KEY is required"),
-	STRIPE_WEBHOOK_SECRET: z.string().optional(),
+	BKASH_APP_KEY: z.string().min(1, "BKASH_APP_KEY is required"),
+	BKASH_APP_SECRET: z.string().min(1, "BKASH_APP_SECRET is required"),
+	BKASH_USERNAME: z.string().min(1, "BKASH_USERNAME is required"),
+	BKASH_PASSWORD: z.string().min(1, "BKASH_PASSWORD is required"),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);

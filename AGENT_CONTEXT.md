@@ -15,7 +15,7 @@
 - **Authentication**: `@clerk/express`, `bcryptjs`, `jsonwebtoken`, `google-auth-library`.
 - **Security & Middleware**: `helmet`, `cors`, `cookie-parser`.
 - **Validation**: `zod` for schema and input validation.
-- **Payments**: `stripe` for processing transactions.
+- **Payments**: `bkash` for processing transactions.
 - **Caching & Queues**: `ioredis` for interacting with Redis.
 
 ## Architecture & Structure
@@ -35,16 +35,36 @@ src/
 │   │   │   ├── ambulance.route.ts
 │   │   │   ├── ambulance.service.ts
 │   │   │   └── ambulance.validation.ts
+│   │   ├── audit/
+│   │   │   ├── audit.controller.ts
+│   │   │   ├── audit.route.ts
+│   │   │   ├── audit.service.ts
+│   │   │   └── audit.validation.ts
 │   │   ├── driver/
 │   │   │   ├── driver.controller.ts
 │   │   │   ├── driver.route.ts
 │   │   │   ├── driver.service.ts
 │   │   │   └── driver.validation.ts
+│   │   ├── emergency/
+│   │   │   ├── emergency.controller.ts
+│   │   │   ├── emergency.route.ts
+│   │   │   ├── emergency.service.ts
+│   │   │   └── emergency.validation.ts
 │   │   ├── hospital/
 │   │   │   ├── hospital.controller.ts
 │   │   │   ├── hospital.route.ts
 │   │   │   ├── hospital.service.ts
 │   │   │   └── hospital.validation.ts
+│   │   ├── payment/
+│   │   │   ├── payment.controller.ts
+│   │   │   ├── payment.route.ts
+│   │   │   ├── payment.service.ts
+│   │   │   └── payment.validation.ts
+│   │   ├── trip/
+│   │   │   ├── trip.controller.ts
+│   │   │   ├── trip.route.ts
+│   │   │   ├── trip.service.ts
+│   │   │   └── trip.validation.ts
 │   │   └── user/
 │   │       ├── user.controller.ts
 │   │       ├── user.interface.ts
@@ -84,3 +104,12 @@ src/
 - **Step 4 Completed**: User sync, Me endpoints, Driver status, and Redis GEO tracking implemented.
 
 - **Step 5 Completed**: Ambulance fleet inventory, Hospital bed tracking, Redis caching, and RBAC permissions.
+
+- **Step 6 Completed**: Concurrency-safe dispatch engine and emergency request lifecycle implemented with \prisma.$transaction\.
+
+- **Step 8 Completed**: Audit logging module, webhook hardening, and production build verification.
+
+### Final Status
+All feature modules (user, driver, ambulance, hospital, emergency, trip, payment, audit) marked as 100% complete.
+Concurrency-safe dispatching, Redis GEO indexing, Clerk RBAC, bKash integration, and soft-delete enforcement verified.
+**Status: Production Ready.**
