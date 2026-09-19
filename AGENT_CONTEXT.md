@@ -31,9 +31,12 @@ src/
 │   │       ├── user.model.ts
 │   │       ├── user.route.ts
 │   │       └── user.service.ts
-│   └── routes/        # Main application router indexing all module routes
-│       └── index.ts
-├── config/            # Environment configurations
+│   ├── routes/        # Main application router indexing all module routes
+│   │   └── index.ts
+│   └── utils/         # Shared utilities (redis, sendResponse)
+│       ├── redis.ts
+│       └── sendResponse.ts
+├── config/            # Zod-validated environment configurations
 │   └── index.ts
 ├── app.ts             # Express app setup and middleware registration
 └── server.ts          # Server bootstrap entry point
