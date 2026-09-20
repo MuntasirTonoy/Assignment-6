@@ -25,7 +25,7 @@ app.use("/api/v1", router);
 
 // Root route
 app.get("/", (_req: Request, res: Response) => {
-	res.json({ success: true, message: "PH Healthcare System API is running" });
+	res.json({ success: true, message: "Ambulance Dispatch Service API is running" });
 });
 
 // 404 Handler

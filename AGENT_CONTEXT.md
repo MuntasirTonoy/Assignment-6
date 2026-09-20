@@ -1,7 +1,7 @@
 # Agent Context
 
 ## Project Overview
-- **Name**: PH Healthcare System Backend (Assignment 6)
+- **Name**: Ambulance Dispatch Service Backend (Assignment 6)
 - **Description**: Emergency Ambulance Dispatch API for a healthcare application, handling patient/driver management, emergency requests, trips, payments, and authenticated workflows.
 - **Environment**: Node.js, Express, TypeScript (ESM format).
 - **Database**: PostgreSQL (hosted on Neon DB) with Prisma ORM v7 (`@prisma/client`) and `prisma.config.ts`.
@@ -113,3 +113,7 @@ src/
 All feature modules (user, driver, ambulance, hospital, emergency, trip, payment, audit) marked as 100% complete.
 Concurrency-safe dispatching, Redis GEO indexing, Clerk RBAC, bKash integration, and soft-delete enforcement verified.
 **Status: Production Ready.**
+
+### Recent Updates
+- Configured explicit external Redis Cloud credentials in `.env` (`REDIS_USERNAME`, `REDIS_PASSWORD`, `REDIS_HOST`, `REDIS_PORT`) and updated `config/index.ts`.
+- Modified `src/app/utils/redis.ts` and `src/server.ts` to explicitly wait for the Redis connection during server bootstrap, using `ioredis` with `lazyConnect: true`.
