@@ -11,7 +11,7 @@ const envSchema = z.object({
 	PORT: z.string().default("5000"),
 	DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
 	REDIS_USERNAME: z.string().default("default"),
-	REDIS_PASSWORD: z.string().min(1, "REDIS_PASSWORD is required"),
+	REDIS_PASSWORD: z.string().optional().default(""),
 	REDIS_HOST: z.string().min(1, "REDIS_HOST is required"),
 	REDIS_PORT: z.string().default("15930").transform(Number),
 	CLERK_SECRET_KEY: z.string().min(1, "CLERK_SECRET_KEY is required"),
