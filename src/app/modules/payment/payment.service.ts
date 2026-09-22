@@ -2,7 +2,7 @@ import { PaymentStatus } from "@prisma/client";
 import { prisma } from "../../utils/prisma.js";
 import { AppError } from "../../errors/AppError.js";
 import { logAuditEvent } from "../../utils/auditLogger.js";
-import { env } from '../../../config/index.js';
+import { env } from "../../../config/index.js";
 
 const BKASH_BASE_URL = "https://tokenized.sandbox.bka.sh/v1.2.0-beta";
 

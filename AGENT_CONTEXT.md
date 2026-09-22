@@ -115,5 +115,6 @@ Concurrency-safe dispatching, Redis GEO indexing, Clerk RBAC, bKash integration,
 **Status: Production Ready.**
 
 ### Recent Updates
+- Added `test-fetch.ts` to securely test fetching data from the backend APIs with a Clerk token.
 - Configured explicit external Redis Cloud credentials in `.env` (`REDIS_USERNAME`, `REDIS_PASSWORD`, `REDIS_HOST`, `REDIS_PORT`) and updated `config/index.ts`.
 - Modified `src/app/utils/redis.ts` and `src/server.ts` to explicitly wait for the Redis connection during server bootstrap, using `ioredis` with `lazyConnect: true`.

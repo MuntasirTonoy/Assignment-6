@@ -23,9 +23,10 @@ redis.on("error", (err) => {
 
 export const connectRedis = async () => {
 	try {
-		await redis.connect();
+		if (redis.status === "wait") {
+			await redis.connect();
+		}
 	} catch (err) {
 		console.error("Failed to connect to Redis", err);
-		process.exit(1);
 	}
 };

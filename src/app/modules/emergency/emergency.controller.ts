@@ -1,10 +1,16 @@
 import type { Request, Response } from "express";
 import { EmergencyService } from "./emergency.service.js";
 import { sendResponse } from "../../utils/sendResponse.js";
+import { getIo } from "../../../socket.js";
 
 const createEmergency = async (req: Request, res: Response): Promise<void> => {
 	// biome-ignore lint/style/noNonNullAssertion: Auth middleware guarantees user object
 	const result = await EmergencyService.createEmergency(req.user!.id, req.body);
+
+	try {
+		getIo().emit("emergency_updated", result);
+	} catch (e) {}
+
 	sendResponse(res, {
 		statusCode: 201,
 		success: true,
@@ -51,6 +57,11 @@ const dispatchEmergency = async (
 		req.params.id as string,
 		req.body,
 	);
+
+	try {
+		getIo().emit("emergency_updated", result);
+	} catch (e) {}
+
 	sendResponse(res, {
 		statusCode: 200,
 		success: true,
@@ -70,6 +81,11 @@ const cancelEmergency = async (req: Request, res: Response): Promise<void> => {
 		userId,
 		userRole,
 	);
+
+	try {
+		getIo().emit("emergency_updated", result);
+	} catch (e) {}
+
 	sendResponse(res, {
 		statusCode: 200,
 		success: true,
