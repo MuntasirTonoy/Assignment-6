@@ -9,6 +9,9 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import router from "./app/routes/index.js";
 import { globalErrorHandler } from "./app/errors/globalErrorHandler.js";
+import session from "express-session";
+import passport from "./config/passport.js";
+import { env } from "./config/index.js";
 
 const app: Application = express();
 
@@ -16,9 +19,20 @@ const app: Application = express();
 app.use(helmet());
 app.use(cors());
 app.use(cookieParser());
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(
+	session({
+		secret: env.SESSION_SECRET,
+		resave: false,
+		saveUninitialized: false,
+		cookie: { secure: env.NODE_ENV === "production" },
+	}),
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Global Routes
 app.use("/api/v1", router);

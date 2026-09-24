@@ -4,7 +4,9 @@ import { env } from "../../config/index.js";
 export const redis = new Redis({
 	host: env.REDIS_HOST,
 	port: env.REDIS_PORT,
-	...(env.REDIS_PASSWORD ? { username: env.REDIS_USERNAME, password: env.REDIS_PASSWORD } : {}),
+	...(env.REDIS_PASSWORD
+		? { username: env.REDIS_USERNAME, password: env.REDIS_PASSWORD }
+		: {}),
 	lazyConnect: true, // Requires explicit connect() call
 	maxRetriesPerRequest: 3,
 	retryStrategy(times) {

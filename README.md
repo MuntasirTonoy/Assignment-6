@@ -7,7 +7,7 @@ This is the backend API for the **Ambulance Dispatch Service (Assignment 6)**. I
 - **Runtime:** Node.js, Express (TypeScript)
 - **Database:** PostgreSQL (Neon DB) with Prisma ORM
 - **Caching & Geospatial:** Redis (`ioredis`) for driver geolocation tracking and caching
-- **Authentication:** Clerk RBAC (Role-Based Access Control)
+- **Authentication:** Passport.js (Local Strategy, Google OAuth, JWT)
 - **Validation:** Zod
 - **Payments:** bKash API
 
@@ -38,7 +38,7 @@ src/
 - **Modular Monolith:** Features are separated into individual folders (`modules/*`) containing their respective Routes, Controllers, Services, and Validations.
 - **Data Layer:** Prisma ORM manages interactions with PostgreSQL, ensuring type-safe database queries.
 - **Caching & Geospatial Indexing:** Redis (`ioredis`) is leveraged heavily for caching hospital bed counts and indexing driver locations (`GEOADD`, `GEOSEARCH`) for hyper-fast ambulance dispatching.
-- **Security:** Integrated with `@clerk/express` for Role-Based Access Control (RBAC). Input validation is handled gracefully at the middleware level via Zod schemas.
+- **Security:** Integrated with Passport.js for Role-Based Access Control (RBAC) via JWTs and Google OAuth. Input validation is handled gracefully at the middleware level via Zod schemas.
 
 ## 🔄 System Workflow
 1. **Onboarding:** Hospitals, Ambulances, and Users (Patients/Drivers) register on the platform.
@@ -56,11 +56,14 @@ src/
 Make sure your `.env` file contains the following (based on our recent setup):
 ```env
 DATABASE_URL="postgresql://neondb_owner:***@ep-curly-cherry-b4pni1j6-pooler.c-6.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+JWT_SECRET="your_super_secret_jwt_key_here"
+SESSION_SECRET="your_super_secret_session_key_here"
+GOOGLE_CLIENT_ID="your_google_client_id_here"
+GOOGLE_CLIENT_SECRET="your_google_client_secret_here"
 REDIS_HOST="fang-control-adept-70946.db.redis.io"
 REDIS_PORT=15930
 REDIS_USERNAME="default"
 REDIS_PASSWORD="<your-password>"
-CLERK_SECRET_KEY="sk_test_***"
 BKASH_APP_KEY="***"
 BKASH_APP_SECRET="***"
 BKASH_USERNAME="sandboxTokenizedUser02x"
@@ -82,18 +85,55 @@ The server will start at `http://localhost:5000`.
 
 **Base URL:** `http://localhost:5000/api/v1`
 
-*Note: For endpoints that are protected, you will need to pass your Clerk JWT token in the Headers:*
-`Authorization: Bearer <YOUR_CLERK_TOKEN>`
+*Note: For endpoints that are protected, you will need to pass your JWT token (received after login) in the Headers:*
+`Authorization: Bearer <YOUR_JWT_TOKEN>`
 
-### 1. Users
-**Create a User** `POST /users`
+### 1. Authentication
+**Register a Patient** `POST /auth/register`
 ```json
 {
-  "clerkId": "user_2testId123456",
   "email": "patient@example.com",
+  "password": "securepassword123",
   "name": "John Doe",
   "role": "PATIENT",
   "phone": "+8801700000000"
+}
+```
+
+**Register a Driver** `POST /auth/register`
+```json
+{
+  "email": "driver@example.com",
+  "password": "securepassword123",
+  "name": "Jane Driver",
+  "role": "DRIVER",
+  "phone": "+8801800000000",
+  "licenseNumber": "LIC-2026-XYZ"
+}
+```
+
+**Login** `POST /auth/login`
+```json
+{
+  "email": "patient@example.com",
+  "password": "securepassword123"
+}
+```
+*(Copy the `token` from the response and use it for subsequent protected API requests).*
+
+**Google OAuth Login**
+Open `http://localhost:5000/api/v1/auth/google` in a web browser to initiate the Google OAuth flow.
+
+### 2. Users
+**Get Current User Profile** `GET /users/me`
+*Headers: Authorization: Bearer <JWT_TOKEN>*
+
+**Update Current User Profile** `PATCH /users/me`
+*Headers: Authorization: Bearer <JWT_TOKEN>*
+```json
+{
+  "name": "John Doe Jr",
+  "phone": "+8801900000000"
 }
 ```
 
@@ -124,20 +164,15 @@ The server will start at `http://localhost:5000`.
 *(Leave hospitalId null if it's an independent ambulance)*
 
 ### 4. Drivers
-**Register Driver** `POST /drivers`
-```json
-{
-  "userId": "<uuid-from-user-creation>",
-  "licenseNumber": "LIC-2026-XYZ",
-  "ambulanceId": "<uuid-from-ambulance-creation>"
-}
-```
+*Note: Drivers are registered via the `/auth/register` endpoint with `"role": "DRIVER"`.*
 
-**Update Driver Location (Redis Geo-Tracking)** `PATCH /drivers/location`
+**Update Driver Status & Location (Redis Geo-Tracking)** `PATCH /drivers/status`
+*Headers: Authorization: Bearer <JWT_TOKEN_OF_DRIVER>*
 ```json
 {
-  "latitude": 23.7311,
-  "longitude": 90.4011
+  "isAvailable": true,
+  "currentLat": 23.7311,
+  "currentLng": 90.4011
 }
 ```
 

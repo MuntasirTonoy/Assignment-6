@@ -1,8 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import { verifyToken } from "@clerk/express";
+import passport from "passport";
 import type { Role } from "@prisma/client";
-import { env } from "../../config/index.js";
-import { prisma } from "../utils/prisma.js";
 import { AppError } from "../errors/AppError.js";
 
 // Extend Express Request interface with User info
@@ -11,61 +9,39 @@ declare global {
 		interface Request {
 			user?: {
 				id: string;
-				clerkId: string;
 				email: string;
 				role: Role;
+				[key: string]: any;
 			};
 		}
 	}
 }
 
 export const auth = (...requiredRoles: Role[]) => {
-	return async (
-		req: Request,
-		_res: Response,
-		next: NextFunction,
-	): Promise<void> => {
-		try {
-			const authHeader = req.headers.authorization;
-			if (!authHeader?.startsWith("Bearer ")) {
-				throw new AppError(
-					401,
-					"Unauthorized access: Missing or invalid token",
-				);
-			}
+	return (req: Request, res: Response, next: NextFunction) => {
+		passport.authenticate(
+			"jwt",
+			{ session: false },
+			(err: any, user: any, info: any) => {
+				if (err) {
+					return next(err);
+				}
 
-			const token = authHeader.split(" ")[1];
-			const verifiedToken = await verifyToken(token, {
-				secretKey: env.CLERK_SECRET_KEY,
-			});
+				if (!user) {
+					return next(
+						new AppError(401, "Unauthorized access: Missing or invalid token"),
+					);
+				}
 
-			if (!verifiedToken?.sub) {
-				throw new AppError(401, "Unauthorized access: Invalid session");
-			}
+				if (requiredRoles.length > 0 && !requiredRoles.includes(user.role)) {
+					return next(
+						new AppError(403, "Forbidden: Insufficient role permissions"),
+					);
+				}
 
-			// Fetch internal user
-			const user = await prisma.user.findFirst({
-				where: { clerkId: verifiedToken.sub, deletedAt: null },
-			});
-
-			if (!user) {
-				throw new AppError(404, "User account not registered or deactivated");
-			}
-
-			if (requiredRoles.length > 0 && !requiredRoles.includes(user.role)) {
-				throw new AppError(403, "Forbidden: Insufficient role permissions");
-			}
-
-			req.user = {
-				id: user.id,
-				clerkId: user.clerkId || verifiedToken.sub,
-				email: user.email,
-				role: user.role,
-			};
-
-			next();
-		} catch (error) {
-			next(error);
-		}
+				req.user = user;
+				next();
+			},
+		)(req, res, next);
 	};
 };

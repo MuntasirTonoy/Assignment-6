@@ -14,8 +14,13 @@ const envSchema = z.object({
 	REDIS_PASSWORD: z.string().optional().default(""),
 	REDIS_HOST: z.string().min(1, "REDIS_HOST is required"),
 	REDIS_PORT: z.string().default("15930").transform(Number),
-	CLERK_SECRET_KEY: z.string().min(1, "CLERK_SECRET_KEY is required"),
-	CLERK_PUBLISHABLE_KEY: z.string().optional(),
+	JWT_SECRET: z.string().min(1, "JWT_SECRET is required"),
+	GOOGLE_CLIENT_ID: z.string().optional(),
+	GOOGLE_CLIENT_SECRET: z.string().optional(),
+	SESSION_SECRET: z
+		.string()
+		.min(1, "SESSION_SECRET is required")
+		.default("super-secret-session-key"),
 	BKASH_APP_KEY: z.string().min(1, "BKASH_APP_KEY is required"),
 	BKASH_APP_SECRET: z.string().min(1, "BKASH_APP_SECRET is required"),
 	BKASH_USERNAME: z.string().min(1, "BKASH_USERNAME is required"),
