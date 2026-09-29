@@ -3,13 +3,13 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:5000/api/v1";
-const CLERK_TOKEN = process.env.CLERK_TEST_TOKEN;
+const JWT_TOKEN = process.env.JWT_TEST_TOKEN || process.env.JWT_TOKEN;
 
 async function testFetchAmbulances() {
-  if (!CLERK_TOKEN) {
-    console.error("❌ CLERK_TEST_TOKEN is missing in environment variables.");
-    console.log("Please run this script with a valid Clerk JWT token:");
-    console.log("CLERK_TEST_TOKEN='your_token_here' npx tsx test-fetch.ts");
+  if (!JWT_TOKEN) {
+    console.error("❌ JWT_TEST_TOKEN is missing in environment variables.");
+    console.log("Please run this script with a valid JWT token (obtained via /api/v1/auth/login or /api/v1/auth/register):");
+    console.log("JWT_TEST_TOKEN='your_jwt_token_here' npx tsx test-fetch.ts");
     process.exit(1);
   }
 
@@ -20,7 +20,7 @@ async function testFetchAmbulances() {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${CLERK_TOKEN}`,
+        Authorization: `Bearer ${JWT_TOKEN}`,
       },
     });
 

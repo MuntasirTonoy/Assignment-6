@@ -12,7 +12,7 @@
 - **Package Manager**: Strictly `npm` (tracked via `package-lock.json`).
 - **Formatting & Linting**: Biome (`@biomejs/biome`).
 - **Dev Server**: `tsx watch` for hot-reloading.
-- **Authentication**: `@clerk/express`, `bcryptjs`, `jsonwebtoken`, `google-auth-library`.
+- **Authentication**: `passport` (with `passport-local`, `passport-jwt`, `passport-google-oauth20`), `bcryptjs`, `jsonwebtoken`.
 - **Security & Middleware**: `helmet`, `cors`, `cookie-parser`.
 - **Validation**: `zod` for schema and input validation.
 - **Payments**: `bkash` for processing transactions.
@@ -110,11 +110,12 @@ src/
 - **Step 8 Completed**: Audit logging module, webhook hardening, and production build verification.
 
 ### Final Status
-All feature modules (user, driver, ambulance, hospital, emergency, trip, payment, audit) marked as 100% complete.
-Concurrency-safe dispatching, Redis GEO indexing, Clerk RBAC, bKash integration, and soft-delete enforcement verified.
+All feature modules (auth, user, driver, ambulance, hospital, emergency, trip, payment, audit) marked as 100% complete.
+Concurrency-safe dispatching, Redis GEO indexing, Passport.js RBAC (Local, JWT, Google OAuth), bKash integration, and soft-delete enforcement verified.
 **Status: Production Ready.**
 
 ### Recent Updates
-- Added `test-fetch.ts` to securely test fetching data from the backend APIs with a Clerk token.
+- Fully transitioned authentication from Clerk to Passport.js (`passport-local`, `passport-jwt`, `passport-google-oauth20`).
+- Updated `test-fetch.ts` to test fetching backend APIs with a standard Passport.js-issued JWT Bearer token.
 - Configured explicit external Redis Cloud credentials in `.env` (`REDIS_USERNAME`, `REDIS_PASSWORD`, `REDIS_HOST`, `REDIS_PORT`) and updated `config/index.ts`.
 - Modified `src/app/utils/redis.ts` and `src/server.ts` to explicitly wait for the Redis connection during server bootstrap, using `ioredis` with `lazyConnect: true`.

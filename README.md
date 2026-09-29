@@ -7,7 +7,7 @@ This is the backend API for the **Ambulance Dispatch Service (Assignment 6)**. I
 - **Runtime:** Node.js, Express (TypeScript)
 - **Database:** PostgreSQL (Neon DB) with Prisma ORM
 - **Caching & Geospatial:** Redis (`ioredis`) for driver geolocation tracking and caching
-- **Authentication:** Passport.js (Local Strategy, Google OAuth, JWT)
+- **Authentication:** Passport.js (`passport-local`, `passport-jwt`, `passport-google-oauth20`)
 - **Validation:** Zod
 - **Payments:** bKash API
 
@@ -21,6 +21,7 @@ src/
 │   ├── modules/       # Feature-based modules (Controllers, Routes, Services, Validations)
 │   │   ├── ambulance/
 │   │   ├── audit/
+│   │   ├── auth/
 │   │   ├── driver/
 │   │   ├── emergency/
 │   │   ├── hospital/
@@ -29,7 +30,9 @@ src/
 │   │   └── user/
 │   ├── routes/        # Main application router indexing
 │   └── utils/         # Shared utilities (Prisma client, Redis client, sendResponse)
-├── config/            # Zod-validated environment variables
+├── config/            # Zod-validated environment variables and Passport configuration
+│   ├── index.ts
+│   └── passport.ts
 ├── app.ts             # Express app setup and middleware registration
 └── server.ts          # Server bootstrap entry point
 ```
@@ -38,7 +41,11 @@ src/
 - **Modular Monolith:** Features are separated into individual folders (`modules/*`) containing their respective Routes, Controllers, Services, and Validations.
 - **Data Layer:** Prisma ORM manages interactions with PostgreSQL, ensuring type-safe database queries.
 - **Caching & Geospatial Indexing:** Redis (`ioredis`) is leveraged heavily for caching hospital bed counts and indexing driver locations (`GEOADD`, `GEOSEARCH`) for hyper-fast ambulance dispatching.
-- **Security:** Integrated with Passport.js for Role-Based Access Control (RBAC) via JWTs and Google OAuth. Input validation is handled gracefully at the middleware level via Zod schemas.
+- **Security & Authentication:** Fully powered by **Passport.js**:
+  - **Local Strategy (`passport-local`):** Validates email and bcrypt-hashed password credentials.
+  - **JWT Strategy (`passport-jwt`):** Stateless bearer token verification for securing endpoints and enforcing Role-Based Access Control (RBAC: `PATIENT`, `DRIVER`, `ADMIN`).
+  - **Google OAuth 2.0 (`passport-google-oauth20`):** Secure federated social authentication with express-session handling.
+  - **Request Validation:** Handled strictly at the middleware layer using Zod schemas.
 
 ## 🔄 System Workflow
 1. **Onboarding:** Hospitals, Ambulances, and Users (Patients/Drivers) register on the platform.
@@ -137,7 +144,7 @@ Open `http://localhost:5000/api/v1/auth/google` in a web browser to initiate the
 }
 ```
 
-### 2. Hospitals
+### 3. Hospitals
 **Add a Hospital** `POST /hospitals`
 ```json
 {
@@ -151,7 +158,7 @@ Open `http://localhost:5000/api/v1/auth/google` in a web browser to initiate the
 }
 ```
 
-### 3. Ambulances
+### 4. Ambulances
 **Add an Ambulance** `POST /ambulances`
 ```json
 {
@@ -163,7 +170,7 @@ Open `http://localhost:5000/api/v1/auth/google` in a web browser to initiate the
 ```
 *(Leave hospitalId null if it's an independent ambulance)*
 
-### 4. Drivers
+### 5. Drivers
 *Note: Drivers are registered via the `/auth/register` endpoint with `"role": "DRIVER"`.*
 
 **Update Driver Status & Location (Redis Geo-Tracking)** `PATCH /drivers/status`
@@ -176,7 +183,7 @@ Open `http://localhost:5000/api/v1/auth/google` in a web browser to initiate the
 }
 ```
 
-### 5. Emergencies & Dispatch
+### 6. Emergencies & Dispatch
 **Request Emergency Ambulance** `POST /emergencies`
 ```json
 {
@@ -189,7 +196,7 @@ Open `http://localhost:5000/api/v1/auth/google` in a web browser to initiate the
 }
 ```
 
-### 6. Trips & Payments
+### 7. Trips
 **Complete a Trip** `PATCH /trips/:id/complete`
 ```json
 {
@@ -199,6 +206,7 @@ Open `http://localhost:5000/api/v1/auth/google` in a web browser to initiate the
 }
 ```
 
+### 8. Payments
 **Initiate bKash Payment** `POST /payments/initiate`
 ```json
 {
