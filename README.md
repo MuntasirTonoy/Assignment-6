@@ -131,6 +131,17 @@ The server will start at `http://localhost:5000`.
 **Google OAuth Login**
 Open `http://localhost:5000/api/v1/auth/google` in a web browser to initiate the Google OAuth flow.
 
+**Logout** `POST /auth/logout`
+Destroys any active session, clears the session cookie (`connect.sid`), and logs out the Passport session. *(Note: For JWT-based requests, the client should also delete the stored Bearer token from local/session storage).*
+```json
+// Response:
+{
+  "success": true,
+  "message": "Logged out successfully",
+  "data": null
+}
+```
+
 ### 2. Users
 **Get Current User Profile** `GET /users/me`
 *Headers: Authorization: Bearer <JWT_TOKEN>*

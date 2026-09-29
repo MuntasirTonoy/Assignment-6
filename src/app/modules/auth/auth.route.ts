@@ -12,6 +12,7 @@ router.post(
 	AuthController.register,
 );
 router.post("/login", validateRequest(loginSchema), AuthController.login);
+router.post("/logout", AuthController.logout);
 
 // Google OAuth
 router.get(

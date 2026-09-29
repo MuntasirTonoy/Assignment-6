@@ -76,8 +76,33 @@ const googleCallback = (req: Request, res: Response, next: NextFunction) => {
 	)(req, res, next);
 };
 
+const logout = (req: Request, res: Response, next: NextFunction) => {
+	req.logout((err) => {
+		if (err) return next(err);
+		if (req.session) {
+			req.session.destroy((_sessionErr) => {
+				res.clearCookie("connect.sid");
+				sendResponse(res, {
+					statusCode: 200,
+					success: true,
+					message: "Logged out successfully",
+					data: null,
+				});
+			});
+		} else {
+			sendResponse(res, {
+				statusCode: 200,
+				success: true,
+				message: "Logged out successfully",
+				data: null,
+			});
+		}
+	});
+};
+
 export const AuthController = {
 	register,
 	login,
 	googleCallback,
+	logout,
 };

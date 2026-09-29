@@ -1,18 +1,26 @@
 import Redis from "ioredis";
 import { env } from "../../config/index.js";
 
-export const redis = new Redis({
-	host: env.REDIS_HOST,
-	port: env.REDIS_PORT,
-	...(env.REDIS_PASSWORD
-		? { username: env.REDIS_USERNAME, password: env.REDIS_PASSWORD }
-		: {}),
-	lazyConnect: true, // Requires explicit connect() call
-	maxRetriesPerRequest: 3,
-	retryStrategy(times) {
-		return Math.min(times * 50, 2000);
-	},
-});
+export const redis = env.REDIS_URL
+	? new Redis(env.REDIS_URL, {
+			lazyConnect: true,
+			maxRetriesPerRequest: 3,
+			retryStrategy(times) {
+				return Math.min(times * 50, 2000);
+			},
+		})
+	: new Redis({
+			host: env.REDIS_HOST,
+			port: env.REDIS_PORT,
+			...(env.REDIS_PASSWORD
+				? { username: env.REDIS_USERNAME, password: env.REDIS_PASSWORD }
+				: {}),
+			lazyConnect: true, // Requires explicit connect() call
+			maxRetriesPerRequest: 3,
+			retryStrategy(times) {
+				return Math.min(times * 50, 2000);
+			},
+		});
 
 redis.on("connect", () => {
 	console.log("✅ Redis connected successfully");
